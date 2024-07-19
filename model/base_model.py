@@ -1,16 +1,16 @@
-from abc import ABC, abstractmethod
-from exceptions.not_implemented import NotImplementedYet
+from abc import ABC
 
 
 class BaseModel(ABC):
     def __init__(self):
         self.name = "BaseModel"
-        self.__model = None
+        self.model = None
 
-    @abstractmethod
     def fit(self, features, target):
-        raise NotImplementedYet()
+        self.model.fit(features, target)
 
-    @abstractmethod
     def predict(self, features):
-        raise NotImplementedYet()
+        return self.model.predict(features)
+
+    def predict_proba(self, features):
+        return self.model.predict_proba(features)

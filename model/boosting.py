@@ -18,16 +18,10 @@ class Boosting(BaseModel):
         self.name = boosting_type.value
         match boosting_type:
             case BoostingType.lightgbm:
-                self.__model = LGBMClassifier(*args, **kwargs)
+                self.model = LGBMClassifier(*args, **kwargs)
             case BoostingType.xgboost:
-                self.__model = XGBClassifier(*args, **kwargs)
+                self.model = XGBClassifier(*args, **kwargs)
             case BoostingType.catboost:
-                self.__model = CatBoostClassifier(*args, **kwargs)
+                self.model = CatBoostClassifier(*args, **kwargs)
             case _:
                 raise WrongBoostingType()
-
-    def fit(self, features, target):
-        self.__model.fit(features, target)
-
-    def predict(self, features):
-        return self.__model.predict(features)
