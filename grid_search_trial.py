@@ -5,8 +5,8 @@ import os
 import logging
 from utils.config import Config
 
-config = Config('../../config.yaml')
-data_dir = os.path.join(os.getcwd(), '../../data/raw')
+config = Config('config.yaml')
+data_dir = os.path.join(os.getcwd(), 'data/raw')
 datasets = prepare_dataset(os.path.join(data_dir, 'correct_data.csv'), Dataset.RAW, Target.SLUDGE)
 log = logging.getLogger("Main")
 model_parameters = {

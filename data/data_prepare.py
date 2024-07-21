@@ -3,6 +3,7 @@ import numpy as np
 import random
 import logging
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 
 class Dataset:
@@ -162,4 +163,6 @@ def prepare_dataset(dataset_path, dataset_type: Dataset = Dataset.RAW, target_ty
         data, target_column = calculate_new_target(data, well_name_column, target_column, target_name)
     else:
         data = data.drop(target_name, axis=1)
+    encoder = LabelEncoder()
+    data[target_column] = encoder.fit_transform(data[target_column])
     return make_datasets(data, target_column, well_name_column)

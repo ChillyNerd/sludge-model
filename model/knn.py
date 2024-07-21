@@ -10,7 +10,7 @@ class KNeighbour(BaseModel):
         self.model = KNeighborsClassifier(*args, **kwargs)
         self.scaler = StandardScaler()
 
-    def fit(self, features, target):
+    def fit(self, features, target, *args, **kwargs):
         features = self.scaler.fit_transform(features)
         super().fit(features, target)
 

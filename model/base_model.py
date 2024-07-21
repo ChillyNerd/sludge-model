@@ -6,7 +6,7 @@ class BaseModel(ABC):
         self.name = "BaseModel"
         self.model = None
 
-    def fit(self, features, target):
+    def fit(self, features, target, *args, **kwargs):
         self.model.fit(features, target)
 
     def predict(self, features):

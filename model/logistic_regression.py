@@ -10,7 +10,7 @@ class LogReg(BaseModel):
         self.model = LogisticRegression(*args, **kwargs)
         self.scaler = StandardScaler()
 
-    def fit(self, features, target):
+    def fit(self, features, target, *args, **kwargs):
         features = self.scaler.fit_transform(features)
         super().fit(features, target)
 

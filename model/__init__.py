@@ -4,3 +4,4 @@ from model.boosting import LightGBM, XGBoost, CatBoost
 from model.logistic_regression import LogReg
 from model.random_forest import RandomForest
 from model.support_vector import SupportVector
+from model.neural_network import NeuralNetwork
