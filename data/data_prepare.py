@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import random
+import logging
 from sklearn.model_selection import train_test_split
 
 
@@ -13,6 +14,9 @@ class Dataset:
 class Target:
     SLUDGE = 'sludge'
     DIRECTION = 'direction'
+
+
+log = logging.getLogger('DataPrepare')
 
 
 def get_valid_wells(data, well_name_column, depth_column):
@@ -29,8 +33,7 @@ def get_valid_wells(data, well_name_column, depth_column):
         well = {'valid': valid, 'name': well_name, 'depths': unique_depth, 'wellid': well_data.iloc[0]['wellid']}
         wells.append(well)
     wells_df = pd.DataFrame(wells)
-    print("Not valid")
-    print(wells_df[~wells_df['valid']])
+    log.debug(str(wells_df[~wells_df['valid']]))
     return wells_df[wells_df['valid']]['name'].tolist()
 
 
@@ -54,13 +57,13 @@ def make_datasets(data, target_column, well_name_column):
     all_well_names = data[well_name_column].unique()
     random.shuffle(all_well_names)
     test_well_names = all_well_names[-10:]
-    print('test well names', test_well_names)
+    log.debug(f'Test Well Names {test_well_names}')
     well_train_data = data[~data[well_name_column].isin(test_well_names)]
     well_test_data = data[data[well_name_column].isin(test_well_names)]
     wells_dataset = well_train_data.drop([target_column, well_name_column], axis=1), well_test_data.drop(
         [target_column, well_name_column], axis=1), well_train_data[target_column], well_test_data[target_column]
     datasets = {
-        'random shuffle dataset': random_dataset,
+        # 'random shuffle dataset': random_dataset,
         'wells shuffle dataset': wells_dataset
     }
     return datasets
@@ -115,7 +118,7 @@ def calculate_new_target(data, well_name_column, target_column, target_name):
         if found_strange_unique:
             continue
         data[data[well_name_column] == well_name] = well_data
-    print("Excluded wells", exclude_wells)
+    log.debug(f'Excluded wells {exclude_wells}')
     data = data[~data[well_name_column].isin(exclude_wells)]
     data.fillna({'new_target': 0}, inplace=True)
     data['result'] = np.nan
@@ -130,7 +133,7 @@ def calculate_new_target(data, well_name_column, target_column, target_name):
                     current_index, 'new_target']
             previous_index = current_index
         data[data[well_name_column] == well_name] = well_data
-    print("This must be True: ", data[target_column].equals(data['result'].apply(lambda result: inverted_sludge_order[result])))
+    log.debug(f'This must be True: {data[target_column].equals(data["result"].apply(lambda result: inverted_sludge_order[result]))}')
     data = data.drop(['result', 'target_order', target_column, target_name], axis=1)
     target_column = 'new_target'
     return data, target_column
@@ -159,5 +162,4 @@ def prepare_dataset(dataset_path, dataset_type: Dataset = Dataset.RAW, target_ty
         data, target_column = calculate_new_target(data, well_name_column, target_column, target_name)
     else:
         data = data.drop(target_name, axis=1)
-    data.to_excel(f'dataset_{dataset_type}_{target_type}.xlsx', index=None)
     return make_datasets(data, target_column, well_name_column)

@@ -2,7 +2,7 @@ from abc import ABC
 
 
 class BaseModel(ABC):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.name = "BaseModel"
         self.model = None
 

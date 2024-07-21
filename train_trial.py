@@ -8,6 +8,16 @@ from sklearn.pipeline import Pipeline
 from model import *
 
 
+def select_hyperparameters(model: BaseModel, parameters: dict):
+    vector = {}
+    tries = 1
+    for parameter in parameters.keys():
+        vector[parameter] = None
+        parameter_values = parameters[parameter] if parameters[parameter] is not None else []
+        parameter_count = len(parameter_values) if len(parameter_values) > 0 else 1
+        tries = tries * parameter_count
+
+
 def train_predict(dataset: Dataset, target: Target):
     data_dir = os.path.join(os.getcwd(), 'data/raw')
     datasets = prepare_dataset(os.path.join(data_dir, 'correct_data.csv'), dataset, target)
@@ -31,16 +41,16 @@ def train_predict(dataset: Dataset, target: Target):
     ])
 
     lgbm = Pipeline([
-        ('model_', Boosting(BoostingType.lightgbm, verbose=0, n_estimators=100))
+        ('model_', LightGBM(verbose=0, n_estimators=100))
     ])
 
     xgbm = Pipeline([
         # ('encoder_', LabelEncoderWrapper()),
-        ('model_', Boosting(BoostingType.xgboost))
+        ('model_', XGBoost())
     ])
 
     cbm = Pipeline([
-        ('model_', Boosting(BoostingType.catboost, silent=True))
+        ('model_', CatBoost(silent=True))
     ])
     models = {
         'KNN': knn,
