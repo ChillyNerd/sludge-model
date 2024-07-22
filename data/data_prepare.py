@@ -56,6 +56,7 @@ def make_datasets(data, target_column, well_name_column):
     y = data[target_column]
     random_dataset = train_test_split(X, y, random_state=30)
     all_well_names = data[well_name_column].unique()
+    random.seed(33)
     random.shuffle(all_well_names)
     test_well_names = all_well_names[-10:]
     log.debug(f'Test Well Names {test_well_names}')
